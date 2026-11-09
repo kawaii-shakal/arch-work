@@ -1,5 +1,7 @@
 # Arch-Work
 
+<img src="art/arch-work.png" alt="Синий шакал, эмблема Arch-Work" width="128">
+
 Персональный образ Arch Linux x86-64 для WSL 2. В него входят твои настройки zsh, Oh My Zsh и Powerlevel10k, утилиты из `packages.txt` и инструменты из `mise.toml`.
 
 ## Установка
