@@ -30,9 +30,9 @@ wsl --install --from-file .\arch-work.wsl
 
 ## GitHub Actions
 
-В приватном репозитории открой **Actions → Build Arch-Work → Run workflow**. Workflow также запускается при изменениях в `main` и при открытии или обновлении pull request. После ручного запуска или отправки изменений в `main` образ доступен в **Artifacts** семь дней.
+Для проверочной сборки открой **Actions → Build Arch-Work → Run workflow**. Проверка также запускается при изменениях в `main` и при открытии или обновлении pull request.
 
-Чтобы сохранить готовую версию в **Releases**, отправь тег с префиксом `v`:
+Чтобы собрать и скачать готовую версию из **Releases**, отправь тег с префиксом `v`:
 
 ```sh
 git tag v0.1.0
