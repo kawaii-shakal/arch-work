@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+
+read -r _ status _ < <(passwd -S user)
+if [[ "$status" != P ]]; then
+    pacman-key --init
+    pacman-key --populate archlinux
+    echo "Choose a password for the Linux user 'user'. It will be used by sudo."
+    passwd user
+fi

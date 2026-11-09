@@ -1,0 +1,10 @@
+*
+!Dockerfile
+!packages.txt
+!mise.toml
+!dotfiles/
+!dotfiles/**
+!scripts/
+!scripts/**
+!wsl/
+!wsl/**

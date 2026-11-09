@@ -1,0 +1,9 @@
+[tools]
+go = "1.26.10"
+golangci-lint = "2"
+terraform = "latest"
+kubectl = "latest"
+argocd = "latest"
+
+[settings.go]
+set_gobin = false

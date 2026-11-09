@@ -1,0 +1,14 @@
+ansible
+bind
+curl
+git
+gzip
+ipcalc
+mise
+ncdu
+nload
+openssh
+sudo
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting
