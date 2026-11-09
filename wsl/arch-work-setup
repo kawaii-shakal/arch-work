@@ -8,3 +8,7 @@ if [[ "$status" != P ]]; then
     echo "Choose a password for the Linux user 'user'. It will be used by sudo."
     passwd user
 fi
+
+if ! runuser -u user -- /usr/local/bin/arch-work-import-ssh; then
+    echo 'SSH import skipped. You can retry later with arch-work-import-ssh.' >&2
+fi

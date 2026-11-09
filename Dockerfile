@@ -8,6 +8,7 @@ COPY dotfiles/ /tmp/arch-work/dotfiles/
 COPY scripts/ /tmp/arch-work/scripts/
 COPY wsl/*.conf /etc/
 COPY --chmod=0755 wsl/arch-work-setup /usr/lib/wsl/arch-work-setup
+COPY --chmod=0755 wsl/arch-work-import-ssh /usr/local/bin/arch-work-import-ssh
 COPY --chmod=0644 wsl/arch-work.ico /usr/lib/wsl/arch-work.ico
 RUN bash /tmp/arch-work/scripts/provision.sh
 

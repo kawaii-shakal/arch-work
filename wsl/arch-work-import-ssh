@@ -1,0 +1,48 @@
+#!/bin/bash
+set -euo pipefail
+
+if (( EUID == 0 )); then
+    echo 'Run this as your regular Linux user.' >&2
+    exit 1
+fi
+
+IFS= read -r -p 'SSH private key path (Windows or WSL, Enter to skip): ' source || exit 0
+[[ -n "$source" ]] || exit 0
+if [[ "$source" == \"*\" ]]; then
+    source="${source:1:-1}"
+fi
+case "$source" in
+    [A-Za-z]:[\\/]*) source=$(wslpath -u "$source") ;;
+    /*) ;;
+    *) echo 'Use an absolute path to a key file.' >&2; exit 1 ;;
+esac
+[[ -f "$source" && -r "$source" ]] || { echo 'Key file is missing or unreadable.' >&2; exit 1; }
+[[ $(stat -Lc '%s' -- "$source") -le 65536 ]] || { echo 'File is too large to be an SSH private key.' >&2; exit 1; }
+
+name=${source##*/}
+case "$name" in
+    config|authorized_keys*|known_hosts*|environment|rc|*.pub)
+        echo 'Select a private key file, such as id_ed25519.' >&2
+        exit 1
+        ;;
+esac
+
+ssh_dir="$HOME/.ssh"
+[[ ! -L "$ssh_dir" ]] || { echo '~/.ssh points elsewhere. Import skipped.' >&2; exit 1; }
+install -d -m 0700 -- "$ssh_dir"
+target="$ssh_dir/$name"
+if [[ -e "$target" || -L "$target" ]]; then
+    printf 'Already exists, skipped: %s\n' "$target"
+    exit 0
+fi
+
+temp=$(mktemp "$ssh_dir/.arch-work-key.XXXXXXXX")
+trap 'rm -f -- "$temp"' EXIT
+cat -- "$source" > "$temp"
+IFS= read -r header < "$temp" || { echo 'Cannot read the private key header.' >&2; exit 1; }
+case "${header%$'\r'}" in
+    '-----BEGIN OPENSSH PRIVATE KEY-----'|'-----BEGIN RSA PRIVATE KEY-----'|'-----BEGIN EC PRIVATE KEY-----'|'-----BEGIN DSA PRIVATE KEY-----'|'-----BEGIN PRIVATE KEY-----'|'-----BEGIN ENCRYPTED PRIVATE KEY-----') ;;
+    *) echo 'The file does not have a recognized private key header.' >&2; exit 1 ;;
+esac
+ln -T -- "$temp" "$target"
+printf 'Imported: %s\n' "$target"

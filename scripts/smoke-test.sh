@@ -16,3 +16,17 @@ runuser -u user -- zsh -lic '
     argocd version --client
     [[ -n "${POWERLEVEL9K_MODE:-}" ]]
 '
+
+runuser -u user -- bash -se <<'SSH_TEST'
+fixture=$(mktemp -d)
+trap 'rm -rf -- "$fixture"' EXIT
+key="$fixture/test-key"
+export HOME="$fixture/home"
+ssh-keygen -q -t ed25519 -N '' -f "$key"
+printf '%s\n' "$key" | arch-work-import-ssh
+test "$(stat -c '%a' "$HOME/.ssh/test-key")" = 600
+test "$(sha256sum < "$key")" = "$(sha256sum < "$HOME/.ssh/test-key")"
+printf 'existing\n' > "$HOME/.ssh/test-key"
+printf '%s\n' "$key" | arch-work-import-ssh
+test "$(cat "$HOME/.ssh/test-key")" = existing
+SSH_TEST
